@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Muhimbi::VERSION
   spec.authors       = ["miguel michelson"]
   spec.email         = ["miguelmichelson@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{Muhimbi Ruby Client}
+  spec.summary       = %q{Muhimbi client}
+  spec.homepage      = "github.com/michelson/muhimbi"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

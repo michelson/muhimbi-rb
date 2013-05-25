@@ -1,3 +1,4 @@
+require "base64"
 require File.expand_path(File.dirname(__FILE__) + '../../spec_helper')
 
 describe "Client class" do
@@ -20,10 +21,16 @@ describe "Client class" do
     @client.operations.include?(:convert).should be_true
   end
 
+  context "stats" do
+    it "description" do
+      @client
+    end
+  end
+
   context "convert" do
 
     before :each do
-      @file = File.open(File.dirname(__FILE__) + "/../fixtures/image.jpeg")
+      @file = File.open(File.dirname(__FILE__) + "/../fixtures/doc.docx")
       @sourceFile = Base64.encode64(@file.read)
     end
 
@@ -32,28 +39,26 @@ describe "Client class" do
     end
 
     it "should upload file" do
-      #convert = Convert.new(sourceFile, openOptions, conversionSettings)
-
-      #sourceFile: @sourceFile
+      #binding.pry
       open_options = {
-        fileExtension: "jpeg",
-        originalFileName: "image.jpeg"
+        "ns1:fileExtension"=> "docx",
+        "ns1:originalFileName"=> "doc.docx"
       }
       conversion_settings = {
-        format: "pdf",
-        fidelity: "Full",
-        openPassword: "",
-        ownerPassword: ""
+        "ns1:format"=> "pdf",
+        "ns1:fidelity"=> "Full",
+        "ns1:openPassword"=> "",
+        "ns1:ownerPassword"=> ""
       }
 
       response = @client.call(:convert , message: {
-        sourceFile: @sourceFile,
-        conversionSettings: conversion_settings,
-        openOptions: open_options
+        "ns:sourceFile"=> @sourceFile,
+        "ns:openOptions"=> open_options,
+        "ns:conversionSettings"=> conversion_settings
         }
       )
 
-      binding.pry
+
     end
 
 
