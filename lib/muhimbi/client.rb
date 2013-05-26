@@ -16,12 +16,7 @@ module Muhimbi
 
     def convert
 
-      wsdl_res = Muhimbi::Client.client.call(:convert , message: {
-        "ns:sourceFile"        => self.file_content,
-        "ns:openOptions"       => self.open_options,
-        "ns:conversionSettings"=> conversion_settings
-        }
-      )
+      wsdl_res = Muhimbi::Client.client.call(:convert , message: convert_options )
 
       @response = wsdl_res.to_hash[:convert_response][:convert_result]
     end
@@ -41,6 +36,14 @@ module Muhimbi
     end
 
 private
+
+    def convert_options
+      {
+        "ns:sourceFile"        => self.file_content,
+        "ns:openOptions"       => self.open_options,
+        "ns:conversionSettings"=> conversion_settings
+      }
+    end
 
     def encode_file(file)
       Base64.strict_encode64(file.read)
