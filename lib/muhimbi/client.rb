@@ -4,20 +4,28 @@ module Muhimbi
 
     attr_accessor :file_content,
                   :file,
-                  :open_options,
-                  :conversion_settings,
+                  #:open_options,
+                  #:conversion_settings,
+                  :options
                   :response
 
-    def initialize(file, opts=nil)
+    def initialize(file, opts={})
+
       self.file_content = encode_file(file)
+
       self.file         = file
-      default_options
+
+      self.tap do |client|
+        client.options    ||= {}
+        client.defaults_options(opts)
+        client.options ||= opts
+        yield client if block_given?
+      end
+
     end
 
     def convert
-
-      wsdl_res = Muhimbi::Client.client.call(:convert , message: convert_options )
-
+      wsdl_res = Muhimbi::Client.client.call(:convert , message: self.options )
       @response = wsdl_res.to_hash[:convert_response][:convert_result]
     end
 
@@ -35,37 +43,33 @@ module Muhimbi
       end
     end
 
+    def method_missing(meth, opts = {})
+      merge_options meth, opts
+    end
+
+    def defaults_options(opts={})
+
+      self.sourceFile(self.file_content)
+
+      self.openOptions({
+        "ns1:FileExtension"   => File.extname( self.file ).gsub(".", ""),
+        "ns1:OriginalFileName"=> File.basename( self.file)
+      })
+
+      self.conversionSettings({
+        "ns1:Format"=> "PDF",
+        "ns1:Fidelity"=> "Full"
+      })
+    end
+
 private
 
-    def convert_options
-      {
-        "ns:sourceFile"        => self.file_content,
-        "ns:openOptions"       => self.open_options,
-        "ns:conversionSettings"=> conversion_settings
-      }
+    def merge_options(name, opts)
+      @options.merge! "ns:#{name}" => opts
     end
 
     def encode_file(file)
       Base64.strict_encode64(file.read)
-    end
-
-    def default_options
-      default_open_options
-      default_conversion_settings
-    end
-
-    def default_open_options
-      self.open_options = {
-        "ns1:FileExtension"   => File.extname( self.file ).gsub(".", ""),
-        "ns1:OriginalFileName"=> File.basename( self.file)
-      }
-    end
-
-    def default_conversion_settings
-      self.conversion_settings = {
-        "ns1:Format"=> "PDF",
-        "ns1:Fidelity"=> "Full"
-      }
     end
 
   end
