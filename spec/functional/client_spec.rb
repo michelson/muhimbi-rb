@@ -30,8 +30,8 @@ describe "Client class" do
   context "convert" do
 
     before :each do
-      @file = File.open(File.dirname(__FILE__) + "/../fixtures/doc.docx")
-      @sourceFile = Base64.encode64(@file.read)
+      @file = File.open(File.dirname(__FILE__) + "/../fixtures/doc.doc")
+      @sourceFile = Base64.strict_encode64(@file.read)
     end
 
     it "file should exists" do
@@ -39,16 +39,14 @@ describe "Client class" do
     end
 
     it "should upload file" do
-      #binding.pry
+
       open_options = {
-        "ns1:fileExtension"=> "docx",
-        "ns1:originalFileName"=> "doc.docx"
+        "ns1:FileExtension"=> "doc",
+        "ns1:OriginalFileName"=> "doc.doc"
       }
       conversion_settings = {
-        "ns1:format"=> "pdf",
-        "ns1:fidelity"=> "Full",
-        "ns1:openPassword"=> "",
-        "ns1:ownerPassword"=> ""
+        "ns1:Format"=> "PDF",
+        "ns1:Fidelity"=> "Full"
       }
 
       response = @client.call(:convert , message: {
@@ -58,6 +56,14 @@ describe "Client class" do
         }
       )
 
+      res = response.to_hash[:convert_response][:convert_result]
+      res.should_not be_blank
+
+      #res.should be Base64.strict_decode64(@sourceFile)
+
+      decoded  = Base64.strict_decode64(res)
+
+      File.open("FUFU.pdf", 'w') {|f| f.write(decoded) }
 
     end
 
