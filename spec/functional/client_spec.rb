@@ -59,12 +59,23 @@ describe "Client class" do
       res = response.to_hash[:convert_response][:convert_result]
       res.should_not be_blank
 
-      #res.should be Base64.strict_decode64(@sourceFile)
-
       decoded  = Base64.strict_decode64(res)
 
-      File.open("FUFU.pdf", 'w') {|f| f.write(decoded) }
+      #File.open("FUFU.pdf", 'w') {|f| f.write(decoded) }
 
+    end
+
+  end
+
+  context "convert 2" do
+    before :each do
+      @file = File.open(File.dirname(__FILE__) + "/../fixtures/doc.doc")
+      @client = Muhimbi::Client.new(@file)
+      @client.convert
+    end
+
+    it "client" do
+      @client.response.should_not be_blank
     end
 
 
