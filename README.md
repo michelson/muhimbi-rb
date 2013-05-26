@@ -20,7 +20,32 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### setup
+
+    Muhimbi::Config.setup do |config|
+      config.wsdl = "http://your_ip/Muhimbi.DocumentConverter.WebService/?wsdl"
+    end
+
+### Client
+
+    @file = File.open(some_file)
+
+    @client = Muhimbi::Converter.new(file: @file)
+    @response = @client.convert
+
+### Get configuration & options
+
+    @client.get_configuration
+
+    @client.get_diagnostics(["WordProcessing", "InfoPath"])
+
+
+### TODO
+
+  this needs some
+  + More Specs
+  + ProcessBatch implementation and Specs
+  + Watermarking implementation and Specs
 
 ## Contributing
 
