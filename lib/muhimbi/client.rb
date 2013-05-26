@@ -1,33 +1,7 @@
+require "active_support/core_ext/class/subclasses"
 
 module Muhimbi
   class Client
-
-    attr_accessor :file_content,
-                  :file,
-                  #:open_options,
-                  #:conversion_settings,
-                  :options
-                  :response
-
-    def initialize(file, opts={})
-
-      self.file_content = encode_file(file)
-
-      self.file         = file
-
-      self.tap do |client|
-        client.options    ||= {}
-        client.defaults_options(opts)
-        client.options ||= opts
-        yield client if block_given?
-      end
-
-    end
-
-    def convert
-      wsdl_res = Muhimbi::Client.client.call(:convert , message: self.options )
-      @response = wsdl_res.to_hash[:convert_response][:convert_result]
-    end
 
     def self.client
       Savon.client do
@@ -43,33 +17,23 @@ module Muhimbi
       end
     end
 
-    def method_missing(meth, opts = {})
-      merge_options meth, opts
+    def self.get_configuration
+      wsdl_res = Muhimbi::Client.client.call(:get_configuration )
+      wsdl_res.to_hash[:get_configuration_response][:get_configuration_result]
     end
 
-    def defaults_options(opts={})
+    def self.get_diagnostics(opts=[])
 
-      self.sourceFile(self.file_content)
+      arr = []
 
-      self.openOptions({
-        "ns1:FileExtension"   => File.extname( self.file ).gsub(".", ""),
-        "ns1:OriginalFileName"=> File.basename( self.file)
-      })
+      opts.each do |opt|
+        arr << {"ns1:DiagnosticRequestItem"=> { "ns1:ConverterName" => opt }}
+      end
 
-      self.conversionSettings({
-        "ns1:Format"=> "PDF",
-        "ns1:Fidelity"=> "Full"
-      })
-    end
+      msg_options = {"ns:convertersToDiagnose"=> arr  }
 
-private
-
-    def merge_options(name, opts)
-      @options.merge! "ns:#{name}" => opts
-    end
-
-    def encode_file(file)
-      Base64.strict_encode64(file.read)
+      wsdl_res = Muhimbi::Client.client.call(:get_diagnostics, message: msg_options )
+      wsdl_res.to_hash[:get_diagnostics_response][:get_diagnostics_result]
     end
 
   end

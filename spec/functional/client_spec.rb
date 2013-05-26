@@ -1,4 +1,3 @@
-require "base64"
 require File.expand_path(File.dirname(__FILE__) + '../../spec_helper')
 
 describe "Client class" do
@@ -21,22 +20,22 @@ describe "Client class" do
     @client.operations.include?(:convert).should be_true
   end
 
-  context "convert 2" do
-    before :each do
-      @file = File.open(File.dirname(__FILE__) + "/../fixtures/doc.doc")
-      @client = Muhimbi::Client.new(@file)
-      @client.convert
-    end
+   context "Get Configuration" do
+     before :each do
+       @client = Muhimbi::Client
+     end
+     it "get_configuration" do
+       @client.get_configuration.should_not be_blank
+       @client.get_configuration.keys.should include(:conversion_server_address)
+     end
+   end
 
-    it "file should exists" do
-      File.exist?(@file).should be_true
-    end
-
-    it "client" do
-      @client.response.should_not be_blank
-    end
-
-
-  end
-
+   context "Get Diagnostics" do
+     before :each do
+       @client = Muhimbi::Client
+     end
+     it "get_diagnostics" do
+       @client.get_diagnostics(["WordProcessing", "InfoPath"]).should_not be_blank
+     end
+   end
 end
