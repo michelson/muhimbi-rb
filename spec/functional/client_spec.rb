@@ -6,7 +6,7 @@ describe "Client class" do
     Muhimbi::Config.setup do |config|
       config.wsdl = config_options["wsdl"]
     end
-    @client = Muhimbi.client
+    @client = Muhimbi::Client.client
   end
 
   it "savon client" do
@@ -21,57 +21,15 @@ describe "Client class" do
     @client.operations.include?(:convert).should be_true
   end
 
-  context "stats" do
-    it "description" do
-      @client
-    end
-  end
-
-  context "convert" do
-
-    before :each do
-      @file = File.open(File.dirname(__FILE__) + "/../fixtures/doc.doc")
-      @sourceFile = Base64.strict_encode64(@file.read)
-    end
-
-    it "file should exists" do
-      File.exist?(@file).should be_true
-    end
-
-    it "should upload file" do
-
-      open_options = {
-        "ns1:FileExtension"=> "doc",
-        "ns1:OriginalFileName"=> "doc.doc"
-      }
-      conversion_settings = {
-        "ns1:Format"=> "PDF",
-        "ns1:Fidelity"=> "Full"
-      }
-
-      response = @client.call(:convert , message: {
-        "ns:sourceFile"=> @sourceFile,
-        "ns:openOptions"=> open_options,
-        "ns:conversionSettings"=> conversion_settings
-        }
-      )
-
-      res = response.to_hash[:convert_response][:convert_result]
-      res.should_not be_blank
-
-      decoded  = Base64.strict_decode64(res)
-
-      #File.open("FUFU.pdf", 'w') {|f| f.write(decoded) }
-
-    end
-
-  end
-
   context "convert 2" do
     before :each do
       @file = File.open(File.dirname(__FILE__) + "/../fixtures/doc.doc")
       @client = Muhimbi::Client.new(@file)
       @client.convert
+    end
+
+    it "file should exists" do
+      File.exist?(@file).should be_true
     end
 
     it "client" do
