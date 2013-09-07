@@ -42,7 +42,7 @@ module Muhimbi
       })
 
       self.conversionSettings({
-        "Format"=> "PDF",
+        "Format"  => "PDF",
         "Fidelity"=> "Full"
       })
     end
