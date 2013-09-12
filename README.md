@@ -24,6 +24,7 @@ Or install it yourself as:
 
     Muhimbi::Config.setup do |config|
       config.wsdl = "http://your_ip/Muhimbi.DocumentConverter.WebService/?wsdl"
+      config.timeout = 200 #defaults to 30
     end
 
 ### Client

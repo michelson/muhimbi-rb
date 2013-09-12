@@ -7,7 +7,8 @@ module Muhimbi
       yield self
     end
 
-    mattr_accessor  :wsdl
+    mattr_accessor  :wsdl, :timeout
+
 
   end
 end

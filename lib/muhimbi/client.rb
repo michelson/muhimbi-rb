@@ -6,6 +6,8 @@ module Muhimbi
     def self.client
       Savon.client do
         wsdl Muhimbi::Config.wsdl
+        open_timeout Muhimbi::Config.timeout || 30
+        read_timeout Muhimbi::Config.timeout || 30
         namespaces(
           "xmlns:ns" =>"http://services.muhimbi.com/2009/10/06",
           "xmlns:ns1"=>"http://types.muhimbi.com/2009/10/06",

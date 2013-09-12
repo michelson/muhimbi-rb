@@ -4,12 +4,18 @@ describe "Client class" do
   before(:all) do
     Muhimbi::Config.setup do |config|
       config.wsdl = config_options["wsdl"]
+      config.timeout = config_options["timeout"]
     end
     @client = Muhimbi::Client.client
   end
 
   it "savon client" do
     @client.class.should == Savon::Client
+  end
+
+  it "timeout should configurable" do
+    @client.instance_variable_get("@wsdl").request.open_timeout.should == config_options["timeout"]
+    @client.instance_variable_get("@wsdl").request.read_timeout.should == config_options["timeout"]
   end
 
   it "should have operations" do
