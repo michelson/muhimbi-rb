@@ -26,5 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "debugger"
 
   spec.add_dependency "activesupport"
-  spec.add_dependency "savon", "~> 2.2.0"
+  spec.add_dependency "savon", "~> 2.9.0"
 end
